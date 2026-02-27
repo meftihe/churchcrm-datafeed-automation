@@ -18,7 +18,7 @@ export async function exitBrowser(driver) {
 export async function saveMember(driver, member, currentFamily) {
   try {
     await driver.get(
-      `${process.env.BASEURL}/PersonEditor.php?FamilyID=${currentFamily}`
+      `${process.env.BASEURL}/PersonEditor.php?FamilyID=${currentFamily}`,
     );
     await driver.wait(until.elementLocated(By.id('FirstName')));
 
@@ -30,14 +30,14 @@ export async function saveMember(driver, member, currentFamily) {
     const birthDay = await driver.findElement(By.id('BirthDay'));
     const birthYear = await driver.findElement(By.id('BirthYear'));
     const familyRole = await driver.findElement(By.name('FamilyRole'));
-    const becameChristian = await driver.findElement(By.name('c2'));
+    const becameChristian = await driver.findElement(By.name('c1'));
     const membershipDate = await driver.findElement(By.name('MembershipDate'));
-    const educationLevel = await driver.findElement(By.name('c3'));
-    const occupation = await driver.findElement(By.name('c4'));
-    const baptizm = await driver.findElement(By.name('c5'));
-    const classification = await driver.findElement(By.name('Classification'));
+    const educationLevel = await driver.findElement(By.name('c2'));
+    const occupation = await driver.findElement(By.name('c3'));
+    const baptism = await driver.findElement(By.name('c4'));
+    const ministry = await driver.findElement(By.name('c6'));
     const cellPhone = await driver.findElement(By.name('CellPhone'));
-    const chapel = await await driver.findElement(By.name('c6'));
+    const chapel = await driver.findElement(By.name('c5'));
 
     const saveButton = await driver.findElement(By.name('PersonSubmitAndAdd'));
 
@@ -46,11 +46,6 @@ export async function saveMember(driver, member, currentFamily) {
     const birthMonthSelect = new Select(birthMonth);
     const birthDaySelect = new Select(birthDay);
     const familyRoleSelect = new Select(familyRole);
-    const educationLevelSelect = new Select(educationLevel);
-    const occupationSelect = new Select(occupation);
-    const baptizmSelect = new Select(baptizm);
-    const classificationSelect = new Select(classification);
-    const chapelSelect = new Select(chapel);
 
     birthYear.clear();
 
@@ -59,7 +54,7 @@ export async function saveMember(driver, member, currentFamily) {
     await middleName.sendKeys(member['Last Name']);
     await lastName.sendKeys(member['Middle Name']);
     await birthMonthSelect.selectByValue(
-      randomToString(getRandomNumber(1, 12))
+      randomToString(getRandomNumber(1, 12)),
     );
     await birthDaySelect.selectByVisibleText(getRandomNumber(1, 28).toString());
     await birthYear.sendKeys(member['Date of birth']);
@@ -67,29 +62,19 @@ export async function saveMember(driver, member, currentFamily) {
     await becameChristian.sendKeys(
       member['Became Christian'] === 'From Family'
         ? member['Date of birth']
-        : member['Became Christian']
+        : member['Became Christian'],
     );
     if (member['Become member of the church'] !== '') {
       await membershipDate.sendKeys(
-        getDate(member['Become member of the church'])
+        getDate(member['Become member of the church']),
       );
     }
-    if (member['Education Level'] !== '') {
-      await educationLevelSelect.selectByVisibleText(member['Education Level']);
-    }
-    if (member['Occupation'] !== '') {
-      await occupationSelect.selectByVisibleText(member['Occupation']);
-    }
-    if (member['Baptism'] !== '') {
-      await baptizmSelect.selectByVisibleText(member['Baptism']);
-    }
-    if (member['Classification'] !== '') {
-      await classificationSelect.selectByVisibleText(
-        member['Classification'] + ' '
-      );
-    }
+    await educationLevel.sendKeys(member['Education Level']);
+    await occupation.sendKeys(member['Occupation']);
+    await baptism.sendKeys(member['Year of Baptism']);
     await cellPhone.sendKeys(member['Mobile']);
-    await chapelSelect.selectByVisibleText(member['Chapel']);
+    await chapel.sendKeys(member['Chapel']);
+    await ministry.sendKeys(member['Ministry']);
 
     await saveButton.click();
   } catch (error) {
@@ -122,7 +107,7 @@ export async function saveFamily(driver, member) {
     const saveButton = await driver.findElement(By.name('FamilySubmit'));
 
     await familyName.sendKeys(
-      `${member['First name']} ${member['Middle Name']}`
+      `${member['First name']} ${member['Middle Name']}`,
     );
     if (member['Marriage Year'] !== '') {
       await weddingDate.sendKeys(getDate(member['Marriage Year']));
@@ -142,7 +127,7 @@ export async function saveFamily(driver, member) {
 
 function getDate(year) {
   return `${year}-${randomToString(getRandomNumber(1, 12))}-${randomToString(
-    getRandomNumber(1, 28)
+    getRandomNumber(1, 28),
   )}`;
 }
 
